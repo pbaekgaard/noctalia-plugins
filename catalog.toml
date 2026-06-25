@@ -1,0 +1,11 @@
+[[plugin]]
+id           = "me/omarchyupdate"
+name         = "Omarchy Update"
+version      = "1.0.0"
+author       = "me"
+license      = "MIT"
+icon         = "puzzle"
+description  = "Omarchy Update"
+deprecated   = false
+min_noctalia = "5.0.0"
+tags         = ["Omarchy"]
