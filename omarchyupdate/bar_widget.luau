@@ -19,6 +19,8 @@ local label = barWidget.getConfig("label")
 local glyph = barWidget.getConfig("glyph")
 local showGlyph = barWidget.getConfig("show_glyph")
 local showLabel = barWidget.getConfig("show_label")
+local updateCommand = barWidget.getConfig("update_cmd")
+local checkUpdateCommand = barWidget.getConfig("check_update_cmd")
 local updateAvailable = false
 
 local clicks = 0
@@ -50,9 +52,10 @@ end)
 foundUpdate = false
 
 function checkForUpdates()
-  noctalia.runAsync("if paru -Qu | grep -q . || flatpak remote-ls --updates 2>/dev/null | grep -q .; then echo 1; else echo 0; fi", function(ret)
-    out = ret['stdout']
-    if out and out == "1" then
+  -- noctalia.runAsync("if paru -Qu | grep -q . || flatpak remote-ls --updates 2>/dev/null | grep -q .; then echo 1; else echo 0; fi", function(ret)
+  noctalia.runAsync(checkUpdateCommand, function(ret)
+    out = ret['exitCode']
+    if out and out == 0 then
       foundUpdate = true
     else
       foundUpdate = false
@@ -63,13 +66,14 @@ end
 
 -- Called on widget interval
 function update()
-  noctalia.setUpdateInterval(10000)
+  noctalia.setUpdateInterval(1000)
   checkForUpdates()
   render()
 end
 
 function onClick()
-  noctalia.runInTerminal("omarchy-update")
+  --noctalia.runInTerminal("omarchy-update")
+  noctalia.runInTerminal(updateCommand)
   render()
 end
 
