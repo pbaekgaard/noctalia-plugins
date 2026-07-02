@@ -19,7 +19,10 @@ local label = barWidget.getConfig("label")
 local glyph = barWidget.getConfig("glyph")
 local showGlyph = barWidget.getConfig("show_glyph")
 local showLabel = barWidget.getConfig("show_label")
+local updateCommand = barWidget.getConfig("update_cmd")
+local checkUpdateCommand = barWidget.getConfig("check_update_cmd")
 local updateAvailable = false
+local currentlyUpdating = false
 
 local clicks = 0
 local dataNote = noctalia.readFile("data.txt") or "(no data file)"
@@ -28,7 +31,11 @@ local tick = noctalia.state.get("tick") or 0
 
 local function render()
   local on = true
-  barWidget.setGlyph(glyph)
+  if currentlyUpdating then
+    barWidget.setGlyph("progress-bolt")
+  else
+    barWidget.setGlyph(glyph)
+  end
   if showGlyph then
     if updateAvailable then
       barWidget.setVisible(true)
@@ -50,26 +57,38 @@ end)
 foundUpdate = false
 
 function checkForUpdates()
-  noctalia.runAsync("if paru -Qu | grep -q . || flatpak remote-ls --updates 2>/dev/null | grep -q .; then echo 1; else echo 0; fi", function(ret)
-    out = ret['stdout']
-    if out and out == "1" then
-      foundUpdate = true
+  noctalia.runAsync(checkUpdateCommand, function(ret)
+    local code = ret and ret.exitCode
+
+    if code == 2 then
+      -- update in progress
+      currentlyUpdating = true
+      updateAvailable = true
+
+    elseif code == 0 then
+      -- no update / idle
+      currentlyUpdating = false
+      updateAvailable = false
+
     else
-      foundUpdate = false
+      currentlyUpdating = false
+      updateAvailable = false
     end
+
+    render()
   end)
-  updateAvailable = foundUpdate
 end
 
 -- Called on widget interval
 function update()
-  noctalia.setUpdateInterval(10000)
+  noctalia.setUpdateInterval(1800000)
   checkForUpdates()
   render()
 end
 
 function onClick()
-  noctalia.runInTerminal("omarchy-update")
+  --noctalia.runInTerminal("omarchy-update")
+  noctalia.runInTerminal(updateCommand)
   render()
 end
 

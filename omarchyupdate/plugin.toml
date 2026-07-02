@@ -27,6 +27,20 @@ entry = "bar_widget.luau"
   default = "Update Unavailable"
 
   [[widget.setting]]
+  key = "update_cmd"
+  type = "string"
+  label_key = "settings.update_cmd.label"
+  description_key = "settings.update_cmd.description"
+  default = "cachy-update"
+
+  [[widget.setting]]
+  key = "check_update_cmd"
+  type = "string"
+  label_key = "settings.check_update_cmd.label"
+  description_key = "settings.check_update_cmd.description"
+  default = "cachy-update -c"
+
+  [[widget.setting]]
   key = "glyph"
   type = "glyph"
   label_key = "settings.glyph.label"

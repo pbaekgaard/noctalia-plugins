@@ -6,11 +6,21 @@
   },
   "settings": {
     "label": {
-      "label": "Label",
-      "description": "Text shown in the bar."
+      "label": "Update Available",
+      "description": "Text shown in the bar when update available."
     },
     "show_label": {
       "label": "Show Label"
+    },
+    "update_cmd": {
+      "cmd": "cachy-update",
+      "label": "Update Command",
+      "description": "Command to update system."
+    },
+    "check_update_cmd": {
+      "cmd": "Update Available",
+      "label": "Check Update Command",
+      "description": "Text shown in the bar when update available."
     },
     "glyph": {
       "label": "Glyph",
